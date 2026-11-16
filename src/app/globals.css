@@ -1,0 +1,295 @@
+@import "tailwindcss";
+
+/* ==========================================================================
+   DESIGN SYSTEM — José Alves
+   Tokens globais (dark = padrão). Toda cor do site passa por aqui.
+   ========================================================================== */
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+:root {
+  /* Light theme */
+  --bg: #f7f8fa;
+  --surface: #ffffff;
+  --surface-2: #f1f3f6;
+  --fg: #09090b;
+  --muted: #52525b;
+  --subtle: #65656f;
+  --line: rgba(9, 9, 11, 0.08);
+  --line-strong: rgba(9, 9, 11, 0.14);
+  --primary: #2563eb;
+  --accent: #0891b2;
+  --glow: rgba(37, 99, 235, 0.18);
+  --glass: rgba(255, 255, 255, 0.65);
+  --grid: rgba(9, 9, 11, 0.045);
+  color-scheme: light;
+}
+
+.dark {
+  --bg: #09090b;
+  --surface: #18181b;
+  --surface-2: #1f1f23;
+  --fg: #fafafa;
+  --muted: #a1a1aa;
+  --subtle: #8b8b94;
+  --line: rgba(255, 255, 255, 0.07);
+  --line-strong: rgba(255, 255, 255, 0.14);
+  --primary: #2563eb;
+  --accent: #06b6d4;
+  --glow: rgba(6, 182, 212, 0.22);
+  --glass: rgba(24, 24, 27, 0.55);
+  --grid: rgba(255, 255, 255, 0.035);
+  color-scheme: dark;
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-fg: var(--fg);
+  --color-muted: var(--muted);
+  --color-subtle: var(--subtle);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-primary: var(--primary);
+  --color-accent: var(--accent);
+
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+  --font-serif: var(--font-instrument-serif), Georgia, serif;
+
+  --animate-marquee: marquee 40s linear infinite;
+  --animate-aurora: aurora 18s ease-in-out infinite alternate;
+  --animate-spin-slow: spin 14s linear infinite;
+  --animate-pulse-soft: pulse-soft 3s ease-in-out infinite;
+}
+
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+@keyframes aurora {
+  0% { transform: translate3d(0, 0, 0) scale(1); }
+  50% { transform: translate3d(6%, -4%, 0) scale(1.15); }
+  100% { transform: translate3d(-5%, 5%, 0) scale(0.95); }
+}
+
+@keyframes pulse-soft {
+  0%, 100% { opacity: 0.55; }
+  50% { opacity: 1; }
+}
+
+/* ---------- Entradas do hero em CSS (rodam antes do JS: melhor LCP) ---------- */
+@keyframes rise {
+  from { transform: translateY(110%); }
+  to { transform: translateY(0); }
+}
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(18px); }
+  to { opacity: 1; transform: none; }
+}
+.anim-rise {
+  display: inline-block;
+  animation: rise 1s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.anim-fade-up {
+  animation: fade-up 0.9s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* ---------- Loading screen em CSS puro ---------- */
+@property --load {
+  syntax: "<integer>";
+  initial-value: 0;
+  inherits: false;
+}
+@keyframes load-count { to { --load: 100; } }
+@keyframes load-bar { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+@keyframes loader-out {
+  to { clip-path: inset(0 0 100% 0); visibility: hidden; }
+}
+@keyframes step-cycle {
+  0%, 24% { transform: translateY(0); }
+  25%, 49% { transform: translateY(-1.5em); }
+  50%, 74% { transform: translateY(-3em); }
+  75%, 100% { transform: translateY(-4.5em); }
+}
+.loader {
+  animation: loader-out 0.8s cubic-bezier(0.65, 0, 0.35, 1) 1.5s forwards;
+}
+.loader-count {
+  animation: load-count 1.4s cubic-bezier(0.33, 1, 0.68, 1) forwards;
+  counter-reset: load var(--load);
+}
+.loader-count::after { content: counter(load); }
+.loader-bar {
+  transform-origin: left;
+  animation: load-bar 1.4s cubic-bezier(0.33, 1, 0.68, 1) forwards;
+}
+.loader-steps { animation: step-cycle 1.4s steps(1) forwards; }
+html.skip-loader .loader { display: none; }
+
+/* ---------- Performance: o navegador pula layout/pintura de seções fora da tela ---------- */
+main > section + section {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 900px;
+}
+
+/* ---------- Scroll reveal (ver components/ui/reveal.tsx) ---------- */
+.reveal,
+.stagger > * {
+  transition:
+    opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.reveal { transition-delay: var(--d, 0s); }
+.stagger > * { transition-delay: calc(var(--i, 0) * 70ms); }
+html.js .reveal:not(.in),
+html.js .stagger:not(.in) > * {
+  opacity: 0;
+  transform: translateY(28px);
+}
+.stagger > :nth-child(2) { --i: 1; }
+.stagger > :nth-child(3) { --i: 2; }
+.stagger > :nth-child(4) { --i: 3; }
+.stagger > :nth-child(5) { --i: 4; }
+.stagger > :nth-child(6) { --i: 5; }
+.stagger > :nth-child(7) { --i: 6; }
+.stagger > :nth-child(8) { --i: 7; }
+.stagger > :nth-child(n + 9) { --i: 8; }
+
+/* ---------- Contador em CSS puro (hero): sem JS, não atrasa o LCP ---------- */
+@property --num {
+  syntax: "<integer>";
+  initial-value: 0;
+  inherits: false;
+}
+@keyframes count-up { from { --num: 0; } to { --num: var(--to); } }
+.count-up {
+  --num: var(--to);
+  counter-reset: num var(--num);
+  animation: count-up 2s cubic-bezier(0.16, 1, 0.3, 1) var(--delay, 0.6s) backwards;
+}
+.count-up::before { content: counter(num); }
+
+/* ---------- Base ---------- */
+html {
+  scroll-behavior: smooth;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-sans);
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background: color-mix(in oklab, var(--accent) 35%, transparent);
+  color: var(--fg);
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 10px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb {
+  background: var(--line-strong);
+  border-radius: 99px;
+  border: 3px solid var(--bg);
+}
+
+/* ---------- Utilities ---------- */
+@utility glass {
+  background: var(--glass);
+  backdrop-filter: blur(16px) saturate(140%);
+  -webkit-backdrop-filter: blur(16px) saturate(140%);
+  border: 1px solid var(--line);
+}
+
+@utility text-gradient {
+  background: linear-gradient(110deg, var(--primary) 0%, var(--accent) 55%, var(--fg) 110%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Borda em gradiente via máscara (funciona sobre qualquer fundo) */
+@utility gradient-border {
+  position: relative;
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    padding: 1px;
+    border-radius: inherit;
+    background: linear-gradient(
+      var(--border-angle, 135deg),
+      color-mix(in oklab, var(--primary) 70%, transparent),
+      transparent 40%,
+      transparent 60%,
+      color-mix(in oklab, var(--accent) 70%, transparent)
+    );
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+  }
+}
+
+@utility grid-bg {
+  background-image:
+    linear-gradient(var(--grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size: 56px 56px;
+}
+
+@utility mask-fade-y {
+  mask-image: linear-gradient(to bottom, transparent, #000 15%, #000 85%, transparent);
+}
+
+@utility mask-fade-x {
+  mask-image: linear-gradient(to right, transparent, #000 10%, #000 90%, transparent);
+}
+
+@utility noise {
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.035;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+}
+
+/* ---------- Cursor personalizado (apenas mouse/trackpad) ---------- */
+@media (pointer: fine) {
+  html.custom-cursor,
+  html.custom-cursor * {
+    cursor: none !important;
+  }
+}
+
+/* ---------- Troca de tema (View Transitions API) ---------- */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+/* ---------- Acessibilidade: movimento reduzido ---------- */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

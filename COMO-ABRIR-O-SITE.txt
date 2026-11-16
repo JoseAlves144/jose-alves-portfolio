@@ -1,0 +1,41 @@
+COMO ABRIR O PORTFÓLIO JOSÉ ALVES
+=================================
+
+JEITO FÁCIL (recomendado)
+-------------------------
+1. Abra a pasta: C:\Users\josea\Documents\claude\jose-alves-portfolio
+2. Dê dois cliques em  ABRIR-SITE.bat
+3. Uma janela preta abre e, em alguns segundos, o navegador abre sozinho em:
+   http://localhost:3000
+
+NÃO FECHE a janela preta enquanto estiver usando o site.
+PARA DESLIGAR: feche a janela preta (ou Ctrl + C dentro dela).
+
+JEITO MANUAL (se preferir o terminal)
+-------------------------------------
+1. Na pasta do projeto, clique na barra de endereço do Explorador,
+   digite  cmd  e aperte Enter (use cmd, NÃO PowerShell).
+2. Digite:  npm run dev
+3. Abra no navegador o endereço que aparecer em "Local:"
+   (normalmente http://localhost:3000).
+
+SE DER PROBLEMA
+---------------
+- "npm não é reconhecido": instale o Node.js LTS em https://nodejs.org e
+  reinicie o computador.
+- PowerShell mostra "execução de scripts foi desabilitada": use o cmd
+  (ou o ABRIR-SITE.bat), não o PowerShell.
+- "Missing script: dev" / "ENOENT package.json": o terminal não está na pasta
+  do projeto. Use o ABRIR-SITE.bat, que já entra na pasta certa.
+- Página não carrega: confira se a janela preta continua aberta e mostra
+  "Ready". Se a porta 3000 estiver ocupada, o Next usa outra (ex.: 3001):
+  use o endereço que aparecer na janela.
+- Pasta node_modules apagada: o ABRIR-SITE.bat reinstala sozinho
+  (ou rode  npm install  manualmente).
+
+OBSERVAÇÕES
+-----------
+- Não dê dois cliques em arquivos .html: o site precisa do servidor acima.
+- Ao editar arquivos (ex.: src\data\timeline.ts), a página atualiza sozinha.
+- O que preencher com seus dados: veja a tabela "O que preencher" no README.md
+  (procure por TODO nos arquivos).
